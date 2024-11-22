@@ -11,7 +11,7 @@ let proximoId = tareas.length > 0 ? tareas[tareas.length - 1].id + 1 : 1;
 let mostrarExpiradas = true; // Variable para controlar la visibilidad de las tareas expiradas
 let fechaFiltro = null;
 
-// Agregar evento al calendario de filtro
+
 const filtroFecha = document.getElementById('filtroFecha');
 filtroFecha.addEventListener('change', (e) => {
   fechaFiltro = e.target.value ? new Date(e.target.value) : null;
@@ -79,7 +79,7 @@ const renderizarTareas = () => {
     // Si mostrarExpiradas es falso y la tarea está expirada, no la renderizamos
     if (!mostrarExpiradas && estaExpirada) return;
 
-    // Resto del código para crear y mostrar la tarea...
+
     const itemTarea = document.createElement('li');
     itemTarea.classList.add(
       'list-group-item',
@@ -150,7 +150,10 @@ botonOcultarExpiradas.addEventListener('click', () => {
     ? 'Ocultar tareas expiradas'
     : 'Mostrar tareas expiradas';
 
-  // Mostrar el toast con el mensaje correspondiente
+ /* =====================================
+ =               TOASTIFY                =
+ ===================================== */
+ 
   Toastify({
     text: mostrarExpiradas ? "Mostrando tareas expiradas" : "Ocultando tareas expiradas",
     duration: 3000,
@@ -186,7 +189,7 @@ const agregarTareas = () => {
     prioridadTarea.value = 'Media'; // Cambiado de 'Alta' a 'Media'
     fechaVencimiento.value = '';
 
-    // Mostrar alerta de éxito con SweetAlert2
+    //SWEET ALERT 2
     Swal.fire({
       title: '¡Éxito!',
       text: 'Tarea agregada correctamente',
@@ -194,7 +197,7 @@ const agregarTareas = () => {
       confirmButtonText: 'Ok',
     });
   } else {
-    // Alerta de error si no se rellenan todos los campos
+    // ERROR
     Swal.fire({
       title: 'Error',
       text: 'Por favor, rellena todos los campos',
@@ -461,4 +464,89 @@ agregarTarea.addEventListener('click', agregarTareas);
 setInterval(() => {
   console.log('Actualizando lista de tareas...'); // Para verificar que se está ejecutando
   renderizarTareas();
-}, 1000); // 1000 milisegundos = 1 segundos
+}, 60000); // 60000 milisegundos = 60 segundos = 1 minuto
+
+const cargarDatosDesdeAPI = async () => {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/todos');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const datos = await response.json();
+    
+    
+    tareas.length = 0; 
+
+   
+    const tareasDesdeAPI = datos.slice(0, 5).map((item) => ({
+      id: item.id,
+      nombre: item.title, 
+      vencimiento: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      completada: item.completed, 
+      prioridad: "Media"
+    }));
+
+    tareas.push(...tareasDesdeAPI);
+    localStorage.setItem('tareas', JSON.stringify(tareas));
+    renderizarTareas();
+  } catch (error) {
+    console.error('Error al cargar los datos:', error);
+  }
+};
+
+
+cargarDatosDesdeAPI();
+
+const actualizarTarea = async (id, tareaActualizada) => {
+  try {
+    const response = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(tareaActualizada),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    // Actualiza la tarea en el array local
+    const index = tareas.findIndex(t => t.id === id);
+    if (index !== -1) {
+      tareas[index] = data;
+      localStorage.setItem('tareas', JSON.stringify(tareas));
+      renderizarTareas();
+    }
+  } catch (error) {
+    console.error('Error al actualizar la tarea:', error);
+  }
+};
+
+const eliminarTareaAPI = async (id) => {
+  try {
+    const response = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    // Elimina la tarea del array local
+    const indice = tareas.findIndex(tarea => tarea.id === id);
+    if (indice !== -1) {
+      tareas.splice(indice, 1);
+      localStorage.setItem('tareas', JSON.stringify(tareas));
+      renderizarTareas();
+    }
+  } catch (error) {
+    console.error('Error al eliminar la tarea:', error);
+  }
+};
+
+const marcarComoCompletadaAPI = async (checkbox, id) => {
+  const tarea = tareas.find(tarea => tarea.id === id);
+  if (tarea) {
+    tarea.completada = checkbox.checked;
+    await actualizarTarea(id, tarea); // Actualiza en la API
+    renderizarTareas();
+  }
+};

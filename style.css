@@ -1,0 +1,98 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4; /* Fondo claro para contraste */
+    color: #333;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #FFC107; /* Color mostaza para el título */
+  }
+  
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .list-group-item {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    transition: background 0.3s;
+  }
+  
+  .list-group-item:hover {
+    background: #FFC107; /* Cambia el fondo a mostaza al pasar el ratón */
+  }
+  
+  .btn {
+    border-radius: 5px;
+  }
+  
+  .btn-primary {
+    background-color: #FFC107; /* Botón de agregar tarea en mostaza */
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #e0a800; /* Un tono más oscuro al pasar el ratón */
+  }
+  
+  .btn-danger {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .btn-danger:hover {
+    background-color: #d32f2f;
+  }
+  
+  .btn-secondary {
+    background-color: #607d8b;
+    color: white;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #455a64;
+  }
+  
+  .badge {
+    border-radius: 10px;
+    padding: 5px 10px;
+  }
+  
+  .bg-success {
+    background-color: #4caf50;
+  }
+  
+  .bg-danger {
+    background-color: #f44336;
+  }
+  
+  .bg-warning {
+    background-color: #ff9800;
+  }
+  
+  .bg-info {
+    background-color: #2196f3;
+  }
+
+.btn {
+    transition: background-color 0.3s, transform 0.3s;
+  }
+  
+  .btn:hover {
+    transform: scale(1.05);
+  }
+  @media (max-width: 600px) {
+    .container {
+      padding: 10px;
+    }
+  }
