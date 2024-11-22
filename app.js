@@ -598,7 +598,7 @@ const marcarComoCompletadaAPI = async (checkbox, id) => {
 };
 
 // Para eliminar una tarea
-eliminarTareaAPI(tareaId);
+// eliminarTareaAPI(tareaId);
 
 // Para actualizar una tarea
 const tareaActualizada = {
