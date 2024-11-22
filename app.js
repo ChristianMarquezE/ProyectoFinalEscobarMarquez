@@ -210,9 +210,21 @@ const eliminarTarea = (id) => {
   const indice = tareas.findIndex((tarea) => tarea.id === id);
 
   if (indice !== -1) {
+    const tareaEliminada = tareas[indice].nombre; // Guarda el nombre de la tarea eliminada
     tareas.splice(indice, 1);
     localStorage.setItem('tareas', JSON.stringify(tareas));
     renderizarTareas();
+
+    // Mostrar notificación de Toastify
+    Toastify({
+      text: `Tarea "${tareaEliminada}" eliminada correctamente`,
+      duration: 3000,
+      gravity: "top", // `top` or `bottom`
+      position: "right", // `left`, `center` or `right`
+      style: {
+        background: "linear-gradient(to right, #f44336, #d32f2f)", // Color rojo para la notificación de eliminación
+      }
+    }).showToast();
   }
 };
 
@@ -497,7 +509,7 @@ const cargarDatosDesdeAPI = async () => {
 
 cargarDatosDesdeAPI();
 
-const actualizarTarea = async (id, tareaActualizada) => {
+const actualizarTareaAPI = async (id, tareaActualizada) => {
   try {
     const response = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
       method: 'PUT',
@@ -506,9 +518,11 @@ const actualizarTarea = async (id, tareaActualizada) => {
         'Content-type': 'application/json; charset=UTF-8',
       },
     });
+
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
+
     const data = await response.json();
     // Actualiza la tarea en el array local
     const index = tareas.findIndex(t => t.id === id);
@@ -519,6 +533,15 @@ const actualizarTarea = async (id, tareaActualizada) => {
     }
   } catch (error) {
     console.error('Error al actualizar la tarea:', error);
+    Toastify({
+      text: `Error al actualizar la tarea: ${error.message}`,
+      duration: 3000,
+      gravity: "top",
+      position: "right",
+      style: {
+        background: "linear-gradient(to right, #f44336, #d32f2f)",
+      }
+    }).showToast();
   }
 };
 
@@ -527,18 +550,41 @@ const eliminarTareaAPI = async (id) => {
     const response = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
       method: 'DELETE',
     });
+
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
+
     // Elimina la tarea del array local
     const indice = tareas.findIndex(tarea => tarea.id === id);
     if (indice !== -1) {
+      const tareaEliminada = tareas[indice].nombre; // Guarda el nombre de la tarea eliminada
       tareas.splice(indice, 1);
       localStorage.setItem('tareas', JSON.stringify(tareas));
       renderizarTareas();
+
+      // Mostrar notificación de Toastify
+      Toastify({
+        text: `Tarea "${tareaEliminada}" eliminada correctamente`,
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        style: {
+          background: "linear-gradient(to right, #f44336, #d32f2f)",
+        }
+      }).showToast();
     }
   } catch (error) {
     console.error('Error al eliminar la tarea:', error);
+    Toastify({
+      text: `Error al eliminar la tarea: ${error.message}`,
+      duration: 3000,
+      gravity: "top",
+      position: "right",
+      style: {
+        background: "linear-gradient(to right, #f44336, #d32f2f)",
+      }
+    }).showToast();
   }
 };
 
@@ -550,3 +596,15 @@ const marcarComoCompletadaAPI = async (checkbox, id) => {
     renderizarTareas();
   }
 };
+
+// Para eliminar una tarea
+eliminarTareaAPI(tareaId);
+
+// Para actualizar una tarea
+const tareaActualizada = {
+  id: tareaId,
+  nombre: "Nueva tarea actualizada",
+  completada: true,
+  prioridad: "Media"
+};
+actualizarTareaAPI(tareaId, tareaActualizada);
