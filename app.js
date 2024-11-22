@@ -602,9 +602,9 @@ const marcarComoCompletadaAPI = async (checkbox, id) => {
 
 // Para actualizar una tarea
 const tareaActualizada = {
-  id: tareaId,
+ // id: tareaId,
   nombre: "Nueva tarea actualizada",
   completada: true,
   prioridad: "Media"
 };
-actualizarTareaAPI(tareaId, tareaActualizada);
+// actualizarTareaAPI(tareaId, tareaActualizada);
